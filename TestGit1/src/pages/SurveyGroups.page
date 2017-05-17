@@ -1,0 +1,128 @@
+<apex:page standardController="Group__c" extensions="SurveyGroupsController" >
+
+<apex:stylesheet value="{!$Page.labs_survey_css}" />
+<apex:includeScript value="{!URLFOR($Resource.SurveyForce, 'jquery.js')}"/>
+<script src="/soap/ajax/18.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/18.0/apex.js" type="text/javascript"></script>
+<script>sforce.connection.sessionId = '{!$Api.Session_ID}'; </script>
+
+
+<!--<style>
+    .survey_preview{
+        display: block;
+        float: left;
+        padding: 10px 10px 40px 10px;
+        margin: 4px;
+        position: relative;
+        background: white;
+        border: 1px solid #ccc;
+        width: 200px;
+        min-height: 100px;
+        box-shadow: 0px 2px 4px #ccc;
+        border-radius: 5px;
+        -moz-box-shadow: 0px 2px 4px #ccc;
+        -moz-border-radius: 5px;
+        -webkit-box-shadow: 0px 2px 4px #ccc;
+        -webkit-border-radius: 5px;
+    }    
+</style>-->
+
+
+<script type="text/javascript">
+  function confirmDelete(deleteId){
+    var r = confirm("{!$Label.LABS_SF_Delete_Confirm}");
+    if(r){
+      sforce.apex.execute(
+        "SurveyGroupsController",
+        "deleteSurveyGroup",
+        {deleteId : deleteId});
+    }
+  }
+ 
+
+$(document).ready(function() {
+  var splitURL = location.href.split(".");
+  var loc;
+  for(i=0; i<splitURL.length; i++){
+    if(splitURL[i] == "visual" || splitURL[i] == "salesforce"){
+      loc = i-1;
+      break;
+    }
+  }
+  
+  if(splitURL[i]=="visual"){
+    $("input[id*='POD']").val(splitURL[loc]);
+  }
+  
+  else{
+    $("input[id*='POD']").val("NO_POD");
+  }
+  
+  $("input[id*='POD']").css("visibility", "hidden");
+
+});
+</script>
+<div id="labs_container">
+    <apex:outputPanel id="surveyGroupsMaker">
+    <apex:pageMessages />
+      <apex:pageBlock >         
+        <apex:form id="makeSurveyGroupForm">
+        <table>
+        <tr>   
+          
+         <td>
+             <div>Group Name:</div> </td>
+         <td>
+             <div>
+                 <apex:inputText id="surveyNameField" value="{!newSurveyGroupName}" size="40" required="true" />
+             </div>    
+         </td>
+         <td>
+             <apex:commandButton action="{!makeNewSurveyGroup}" value="Create New Group" id="createSurveyButton"/>
+        </td>  
+       
+         </tr> 
+             
+       <!--<tr id="assessmentId">
+           <td>Group Assessment Type:</td>
+         <td><apex:selectList value="{!surveyAssessmentType}" multiselect="false" required="true" size="1">
+            <apex:selectOptions value="{!surveyAssessmentTypePicklist}"/>
+         </apex:selectList>
+       </td>
+       </tr>
+       <tr>
+       <td  colspan="2">
+       <div style="margin-left:220px">
+         <apex:commandButton action="{!makeNewSurveyGroup}" value="Create New Group" id="createSurveyButton"/>
+       </div>  
+       </td>  
+        </tr>-->
+        </table>
+        
+         
+        
+        </apex:form>
+      </apex:pageBlock>
+     </apex:outputPanel>
+  <apex:outputPanel id="surveyList">
+    <apex:pageBlock >
+      <h1>Current Survey Groups</h1>
+      <apex:repeat value="{!allSurveyGroups}" var="sur" id="allSurveysRepeat">
+      <div class="survey_preview">
+        <h2><apex:outputLink value="/apex/GroupManagerPage?id={!sur.sgrpId}" >{!sur.sgrpName}</apex:outputLink></h2>
+        <h4>Total Questions: {!sur.sgrpQuesTotal}</h4>
+            <div class="footer">
+            <apex:form >
+         <apex:commandLink value="{!$Label.LABS_SF_Delete}" action="{!doSurveyReset}" reRender="surveyList" onclick="confirmDelete('{!sur.sgrpId}')" >
+           <apex:param assignTo="{!surveyDelete}" value="{!sur.sgrpId}" name="d"/>
+         </apex:commandLink> 
+      </apex:form>
+      <apex:outputLink value="/apex/GroupManagerPage?id={!sur.sgrpId}" >{!$Label.LABS_SF_Edit}</apex:outputLink>
+            </div>
+      </div>
+      </apex:repeat> 
+      <br style="clear: both;" />
+    </apex:pageBlock>
+  </apex:outputPanel>
+</div>
+</apex:page>

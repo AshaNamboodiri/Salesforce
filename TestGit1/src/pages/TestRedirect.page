@@ -1,0 +1,90 @@
+<apex:page controller="reCAPTCHA" action="{!onLoad}">
+
+<style>
+        .redChar{
+            color: #C30000;
+            font-size: 24px;
+            padding:5px;
+        }
+        .blackChar{
+            color: black;
+            font-weight: bold;
+            font-size: 24px;
+            padding:5px;
+        }
+        .container{
+            background-color: #E8E8E8;
+            border-style: solid;
+            border-width:1px;
+            width: 150px;
+            text-align: center;
+        }
+    </style>
+
+
+    <apex:form >
+        <apex:actionRegion rendered="{!toBeValidated}">
+            <apex:pageBlock >
+                <apex:pageblockSection >
+                    <apex:pageBlockSectionItem > Please enter a valid code to proceed 
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:inputText id="code2" label="Code" value="{!code}"/>
+                    </apex:pageBlockSectionItem>    
+                </apex:pageblockSection>
+            <apex:pageBlockSection >
+              <apex:pageBlockSectionItem >  
+                 Enter only the <strong>black</strong> characters mentioned below.
+              </apex:pageBlockSectionItem>   
+              
+              <apex:pageBlockSectionItem >  
+                   <apex:inputText value="{!input}"/>
+              </apex:pageBlockSectionItem>  
+              </apex:pageBlockSection>    
+              
+              <apex:pageBlockSection > 
+              <apex:pageBlockSectionItem >  
+              </apex:pageBlockSectionItem>     
+              <apex:pageBlockSectionItem >  
+                 <apex:outputPanel styleClass="container" layout="block" id="code">
+                    <apex:outputText value="{!char1}" styleClass="blackChar"/>
+                    <apex:outputText value="{!char2}" styleClass="redChar"/>
+                    <apex:outputText value="{!char3}" styleClass="blackChar"/>
+                    <apex:outputText value="{!char4}" styleClass="redChar"/>
+                    <apex:outputText value="{!char5}" styleClass="blackChar"/>
+                    <apex:outputText value="{!char6}" styleClass="redChar"/>
+                 </apex:outputPanel>
+                 </apex:pageBlockSectionItem>  
+             
+           </apex:pageBlockSection>    
+           
+           <apex:pageBlockSection > 
+           
+            <apex:pageBlockSectionItem > 
+                    <apex:commandLink value="Reset" rerender="code"/>
+               </apex:pageBlockSectionItem> 
+ 
+              <apex:pageBlockSectionItem >
+           
+                    <apex:commandLink action="{!validate}" value="Validate">
+                        <apex:param name="param2" assignTo="{!hidden}" value="I Am Hidden" />
+                    </apex:commandLink>    
+               </apex:pageBlockSectionItem> 
+               
+                                  
+            </apex:pageBlockSection>  
+            
+        </apex:pageBlock>
+        </apex:actionRegion>
+        
+        <apex:actionRegion rendered="{!isValid=='true'}">
+            <p> Successfull {!hidden}</p>
+        </apex:actionRegion>
+        
+        <apex:actionRegion rendered="{!isValid=='false'}">
+            <p> Sorry not a valid code.Please try again!!!!!!!!!!! </p>
+        </apex:actionRegion>
+
+        
+    </apex:form>
+</apex:page>

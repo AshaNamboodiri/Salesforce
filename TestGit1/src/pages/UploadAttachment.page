@@ -1,0 +1,22 @@
+<apex:page sidebar="false" showHeader="false" controller="UploadFileController" >
+ <style>
+     page{
+         height:10px;
+     }
+ </style>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+ <script>
+     var $j = jQuery.noConflict();
+     $j(document).ready(function(){ 
+     $j('filesUpload').name='test';          
+     });
+     
+ </script>
+      <apex:form >  
+      <apex:commandButton styleclass="btn btn-default" style="padding: 2px 2px;" value="Upload" action="{!uploadAttach}"/>     
+      <apex:inputFile styleclass="btn btn-default padding: 2px 2px;" value="{!attObj.body}" fileName="{!attObj.name}" id="filesUpload" />
+            
+        <apex:outputLabel value="Existing uploaded File : {!attObj.name}" rendered="{!if(attObj.name!=null,'true','false')}"/>
+      </apex:form>
+       
+</apex:page>

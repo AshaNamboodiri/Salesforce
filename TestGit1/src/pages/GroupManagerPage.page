@@ -1,0 +1,26 @@
+<apex:page standardController="Group__c" extensions="GroupManagerController" showHeader="true">
+<apex:stylesheet value="{!$Page.labs_survey_css}" />
+
+    
+    <style>
+    .activeTab {background-color: #236FBD; color:white; background-image:none}
+    .inactiveTab { background-color: lightgrey; color:black; background-image:none}
+    </style>
+    <div id="labs_container">
+    <h2><apex:outputtext value="{!Group__c.Group_Name__c}" id="groupTitle" /></h2>
+    </div>
+    <!-- Create Tab panel --> 
+    <apex:tabPanel switchType="client" selectedTab="name1" id="SurveyTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab">
+        <!--<apex:tab label="{!$Label.LABS_SF_Share}" name="name1" id="tabOne">
+            <c:viewShareSurveyComponent surveyId="{!Survey__c.Id}" id="shareComp" />
+             <apex:actionSupport event="ontabenter" rerender="shareComp"/>
+            
+        </apex:tab> -->
+        <apex:tab label="Add Questions" name="name4" id="tabFour">
+            
+                 <apex:iframe src="GroupAddQuestion?id={!Group__c.Id}" scrolling="True" id="editSurvey" />    
+                                       
+        </apex:tab>      
+    </apex:tabPanel>
+    
+</apex:page>

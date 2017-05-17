@@ -1,0 +1,203 @@
+<apex:page standardStylesheets="true" controller="AssessmentSurvey" action="{!init}" cache="true" sidebar="false">
+<html lang="en">
+<head>
+
+
+    <script type="text/Javascript">
+        function setFocusOnLoad() {}
+        
+        function closeWindow(){
+         window.top.close();
+        }
+        
+    </script>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,  maximum-scale=1.0, minimum-scale=1.0, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+    
+    <style type="text/css">
+            /*
+            body{
+                height: 100%;
+                width:
+                padding-bottom: 0px;
+                font-family: Arial,Helvetica Neue,Helvetica,sans-serif; 
+            }
+            */
+            h2{
+                font-weight: bold !important;
+                font-size: 12px !important;
+            }
+            .navbar-default {
+                background-color: #f7901e !important;
+                height: 100px;
+                position: absolute;
+                width: 100%;
+                top:0px;
+            }
+            .header{
+                font-size: 24px;
+                font-family: georgia;
+                font-style: italic;
+                font-weight: bold;
+                color: white;
+            }
+            input,textarea,select{
+                background-color: #e4e4e4;
+            }
+            .col-xs-12 {
+                padding-left:1%;
+                padding-right:1%;
+            }
+            .btn-group .btn+.btn, .btn-group .btn+.btn-group, .btn-group .btn-group+.btn, .btn-group .btn-group+.btn-group {
+                margin-left: 7px !important;
+            }
+            .radio-inline label {
+                display:inline-block !important;
+                padding: 0px 37px 3px 7px !important;
+                font-weight: 100 !important;
+            }
+           
+    </style>
+    
+    
+
+</head>
+
+<body>
+<apex:form id="tableid">
+    <!--  Header  --->
+
+        <div class="container-fluid" style="height: 90px;background-color:#f7901e;">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="mo-navbar mo-navbar-left" style="margin-top: 30px;margin-left: 15px;">
+                        <span class="header"> {!wrapperObj.currentGroupName} </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    <apex:pageMessages />
+    <!--  Survey Questions  --->
+    <div class="container-fluid" style="padding-top: 20px;" id="SurveyQuestions">
+        <div class="col-xs-12">
+            <apex:repeat var="disp" value="{!wrapperObj.questionList}">
+                <div class="row">
+                    <div class="col-xs-6" style="padding-bottom:2%;">
+                        {!disp.questionDetail}<apex:outputPanel rendered="{!disp.required}" style="font-weight:bold;font-color:#red">
+                             ({!$Label.LABS_SF_Required})
+                   </apex:outputPanel>                 
+                    </div>
+
+                    <div class="col-xs-6" style="padding-bottom:2%;">
+                        <div id="radio"> 
+                            <div class="radio">
+                              <apex:selectRadio layout="pageDirection" rendered="{!disp.renderSelectRadio}" value="{!disp.selectedOption}" style="border:none;">
+                                <apex:selectOptions value="{!disp.singleOptions}" />
+                              </apex:selectRadio>
+                              </div> 
+                        </div> 
+                       
+                       <div id="checkbox"> 
+                           <div class="checkbox">         
+                              <apex:selectCheckboxes layout="pageDirection" rendered="{!disp.renderSelectCheckboxes}" value="{!disp.selectedOptions}" >
+                                <apex:selectOptions value="{!disp.multiOptions}"/>
+                              </apex:selectCheckboxes> 
+                           </div>
+                        </div>
+                        
+                        <div id="radio"> 
+                         <div class="radio-inline">
+                          <apex:selectRadio rendered="{!disp.renderSelectRow}" value="{!disp.selectedOptionRow}"> 
+                            <apex:selectOptions value="{!disp.rowOptions}"/>
+                          </apex:selectRadio>
+                          </div>
+                        </div>
+                        
+                        <div id="upload">     
+                            <apex:iframe src="UploadAttachment?qRespId={!disp.qResponse.id}" scrolling="True" id="filebutton" rendered="{!disp.renderAttachment}" height="24px" width="96%"/>
+                        </div> 
+
+                        <div id="text">
+                           <apex:inputTextArea styleClass="form-control" html-maxlength="250" rows="6" cols="45" rendered="{!disp.renderFreeText}" value="{!disp.choices}" html-placeholder="Please Enter Your Response"/>  
+                        </div>
+                        <!--Added for enhancement related to Attachment-->
+                                                    
+                       <div id="radioAttachment">  
+                         <apex:outputPanel rendered="{!disp.renderSelectRadioAttachment}">          
+                              <apex:selectRadio layout="pageDirection"  value="{!disp.selectedOption}" style="border:none;">
+                                <apex:selectOptions value="{!disp.singleOptions}" />
+                              </apex:selectRadio>
+                             <apex:iframe src="UploadAttachment?qRespId={!disp.qResponse.id}" scrolling="True" id="radioAttachbutton" height="40px" width="96%"/>  
+                          </apex:outputPanel>
+                        </div>
+                        <div id="freeTextAttachment">  
+                         <apex:outputPanel rendered="{!disp.renderFreeTextAttach}">          
+                              <apex:inputTextArea cols="30" rows="2" value="{!disp.choices}"/>  
+                             <apex:iframe src="UploadAttachment?qRespId={!disp.qResponse.id}" scrolling="True" id="freeAttachbutton" height="40px" width="96%"/>  
+                          </apex:outputPanel>
+                        </div>
+                        <div id="rowAttachment" class="radio-inline">  
+                         <apex:outputPanel rendered="{!disp.renderSelectRowAttach}">          
+                              <apex:selectRadio value="{!disp.selectedOptionRow}"> 
+                                <apex:selectOptions value="{!disp.rowOptions}"/>
+                              </apex:selectRadio>
+                             <apex:iframe src="UploadAttachment?qRespId={!disp.qResponse.id}" scrolling="True" id="rowAttachbutton" height="40px" width="96%"/>  
+                          </apex:outputPanel>
+                        </div>
+                        <!---Enhancement End-->
+                        
+                    </div>
+                </div>
+            </apex:repeat>
+        </div>
+    </div>
+    
+     <!--  Footer  --->
+      <div class="container-fluid" style="height: 90px;background-color:#a89b92;">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-bottom:20px;margin-top: 30px;padding-left: 25px;">
+                <div class="row row-centered">
+                    <center>
+                    <div class="btn-group blocks" data-toggle="buttons">
+
+                        <apex:commandbutton styleclass="btn btn-default" status="actStatusId" value="<" action="{!previousButton}" rerender="tableid" disabled="{!IF(showPrevious==true,'false', 'true')}" style="padding: 5px 10px;background: white !important;color: #f7901e !important;" rendered="{!wrapperObj!=null && wrapperObj.questionList.size > 0}">
+                        </apex:commandbutton> 
+                        <apex:commandbutton styleclass="btn btn-default" status="actStatusId" value="SAVE & CLOSE" action="{!SaveButton}" onComplete="closeWindow();" rerender="tableid"  style="padding: 5px 10px;" disabled="{!if(showSave==false,'false','true')}" rendered="{!wrapperObj!=null && wrapperObj.questionList.size > 0}"/>
+                        <apex:commandbutton styleclass="btn btn-default" status="actStatusId" value="SUBMIT" action="{!SubmitButton}" rerender="tableid"  style="padding: 5px 10px;" disabled="{!if(showSave==true,'false','true')}" rendered="{!wrapperObj!=null && wrapperObj.questionList.size > 0}"/>
+                        <apex:commandbutton styleclass="btn btn-default" status="actStatusId" value=">" action="{!nextButton}" rerender="tableid" disabled="{!IF(showSave==false,'false', 'true')}" style="padding: 5px 10px;background: white !important;color: #f7901e !important;" rendered="{!wrapperObj!=null && wrapperObj.questionList.size > 0}"/> 
+                    </div>
+                    </center>
+                    
+                   <!--
+                    <div class="col-xs-3 col-centered">
+                    </div>
+                    <div class="col-xs-6">
+                        <apex:commandbutton styleclass="btn btn-default" status="actStatusId" value="Previous" action="{!previousButton}" rerender="tableid" disabled="{!IF(showPrevious==true,'false', 'true')}" style="padding: 7px 10px;"/> &nbsp;&nbsp;
+                        <apex:commandbutton styleclass="btn btn-default" status="actStatusId" value="Next" action="{!nextButton}" rerender="tableid" disabled="{!IF(showSave==false,'false', 'true')}" style="padding: 7px 10px;"/> &nbsp;&nbsp;
+                        <apex:commandbutton styleclass="btn btn-default" status="actStatusId" value="Save & Close" action="{!SaveButton}" onComplete="closeWindow();" rerender="tableid"  style="padding: 7px 10px;" disabled="{!if(showSave==false,'false','true')}"/>&nbsp;&nbsp;
+                        <apex:commandbutton styleclass="btn btn-default" status="actStatusId" value="Submit" action="{!SubmitButton}" rerender="tableid"  style="padding: 7px 10px;" disabled="{!if(showSave==true,'false','true')}"/>&nbsp;&nbsp;
+                    </div>
+                    <div class="col-xs-3 col-centered">
+                    </div>
+                    
+                    -->
+                </div>
+            </div>
+        </div>
+    
+         <apex:actionStatus id="actStatusId" >
+            <apex:facet name="start" >
+              <img src="/img/loading.gif" />                    
+            </apex:facet>
+        </apex:actionStatus> 
+    
+</apex:form>
+</body>
+</html>               
+</apex:page>

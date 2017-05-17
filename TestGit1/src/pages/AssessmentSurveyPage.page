@@ -1,0 +1,180 @@
+<apex:page showHeader="false" sidebar="false" controller="AssessmentSurvey" action="{!init}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<style>
+    .dataCell{
+    width: 60%;
+    }
+    
+    .apexp{
+    width: 100%;
+    position: relative;
+     
+    }
+    
+    #radio{
+        position: relative;
+        right: 3%;
+    }
+    
+    #text{
+        position: relative;
+        left: 1%;
+    }
+    
+    #row{
+        position: relative;
+        right: 3%;
+    }
+    
+    #checkbox{
+        position: relative;
+        right: 3%;
+    }
+    #upload{
+        position: relative;
+        left: 1%;
+       
+    }
+    caption{
+   font-size:150%
+   }
+   
+   .apexp .bPageBlock .detailList .list table td, .apexp .bPageBlock .detailList .list table th{
+       border-bottom: none;
+   }
+   
+   textarea{
+       width: 95%;
+       height: 90px;
+   }
+    
+</style>
+
+<script>
+    var $j = jQuery.noConflict();
+    function showDiv(){
+       alert("Ho");
+       $j("#upload").css("display","initial"); 
+       $j("#inputBtn").css("display","none");
+    
+    }
+     $j(document).ready(function(){   
+      
+    
+     });
+     function closeWindow(){
+         window.top.close();
+     }
+</script>
+
+    <apex:pageMessages />
+     <apex:form enctype="multipart/form-data">
+        
+      <apex:pageBlock id="tableid">
+ 
+      
+             <apex:pageBlockSection columns="1">          
+             
+              <apex:pageBlockTable value="{!wrapperObj.questionList}" var="disp" align="center" width="100%" rendered="{!wrapperObj!=null && wrapperObj.questionList.size > 0}">
+                     <b><apex:facet name="caption">{!wrapperObj.currentGroupName}</apex:facet></b>
+                   <apex:column value="{!disp.questionDetail}" headerValue="Question"/> <apex:outputPanel styleClass="requiredText">
+                             ({!$Label.LABS_SF_Required})
+                   </apex:outputPanel>                 
+                    <apex:column headerValue="Answer">
+                        
+                        <div id="radio"> 
+                          <apex:selectRadio layout="pageDirection" rendered="{!disp.renderSelectRadio}" value="{!disp.selectedOption}" style="border:none;">
+                            <apex:selectOptions value="{!disp.singleOptions}" />
+                          </apex:selectRadio>
+                        </div> 
+                       
+                       <div id="checkbox">          
+                          <apex:selectCheckboxes layout="pageDirection" rendered="{!disp.renderSelectCheckboxes}" value="{!disp.selectedOptions}" >
+                            <apex:selectOptions value="{!disp.multiOptions}"/>
+                          </apex:selectCheckboxes> 
+                        </div>
+                      
+                        
+                        <div id="text">  
+                           <apex:inputTextArea cols="30" rows="2" rendered="{!disp.renderFreeText}" value="{!disp.choices}"/>  
+                        </div>
+                       
+                        <div id="row">
+                          <apex:selectRadio rendered="{!disp.renderSelectRow}" value="{!disp.selectedOptionRow}"> 
+                            <apex:selectOptions value="{!disp.rowOptions}"/>
+                          </apex:selectRadio>
+                        </div>
+                          
+                      <!--  <apex:outputLink rendered="{!disp.renderAttachment}" onclick="showDiv()" value="#" id="theLink">uploadFilem</apex:outputLink> -->
+                                                   
+                       <div id="radioAttachment">  
+                         <apex:outputPanel rendered="{!disp.renderSelectRadioAttachment}">          
+                              <apex:selectRadio layout="pageDirection"  value="{!disp.selectedOption}" style="border:none;">
+                                <apex:selectOptions value="{!disp.singleOptions}" />
+                              </apex:selectRadio>
+                             <apex:iframe src="UploadAttachment?qRespId={!disp.qResponse.id}" scrolling="True" id="radioAttachbutton" height="24px" width="96%"/>  
+                          </apex:outputPanel>
+                        </div>
+                        <div id="freeTextAttachment">  
+                         <apex:outputPanel rendered="{!disp.renderFreeTextAttach}">          
+                              <apex:inputTextArea cols="30" rows="2" value="{!disp.choices}"/>  
+                             <apex:iframe src="UploadAttachment?qRespId={!disp.qResponse.id}" scrolling="True" id="freeAttachbutton" height="24px" width="96%"/>  
+                          </apex:outputPanel>
+                        </div>
+                        <div id="rowAttachment">  
+                         <apex:outputPanel rendered="{!disp.renderSelectRowAttach}">          
+                              <apex:selectRadio value="{!disp.selectedOptionRow}"> 
+                                <apex:selectOptions value="{!disp.rowOptions}"/>
+                              </apex:selectRadio>
+                             <apex:iframe src="UploadAttachment?qRespId={!disp.qResponse.id}" scrolling="True" id="rowAttachbutton" height="24px" width="96%"/>  
+                          </apex:outputPanel>
+                        </div>
+                           
+                            <div  id="upload">
+                            
+                           <!-- <c:fileUpload parentId="500g0000006WyFl"/> -->
+                             <!-- <input type="file" id="filesInput" name="file" style="{!if(disp.renderAttachment == 'true','display:block','display:none')}"/> -->
+                                     
+                                <apex:iframe src="UploadAttachment?qRespId={!disp.qResponse.id}" scrolling="True" id="filebutton" rendered="{!disp.renderAttachment}" height="24px" width="96%"/>
+                                <!--<apex:iframe scrolling="True" id="filebutton" rendered="{!disp.renderAttachment}" height="10%"/> -->
+                               <!-- <script>
+                                    var urlPath = window.location.href;
+                                    urlPath = urlPath.split('AssessmentSurveyPage');                                
+                                    var srcPath = 'UploadAttachment' + urlPath[1] + '&attachBody='+'{!disp.attObj.body}'+'&attachName='+'{!disp.attObj.name}';    
+                                    console.log(srcPath);  
+                                    document.getElementById('filebutton').src = srcPath;                          
+                                </script>-->
+                                 </div>
+                              
+                           
+                           
+                        
+                    </apex:column>  
+              </apex:pageBlockTable> 
+              <apex:pageBlockSectionItem rendered="{!wrapperObj.questionList.size == 0}">
+                 <div style="background: none repeat scroll 0% 0% white;height: 160px;">
+                    <h2>Total Score is: {!wrapperObj.scoreValue}</h2>
+                    </div>
+                <!-- <apex:outputText value="Total Score is: {!wrapperObj.scoreValue}" />-->
+
+              </apex:pageBlockSectionItem>
+            </apex:pageBlockSection> 
+
+            <!--<apex:actionRegion >-->
+            <table style="position:relative;left:7px;"> <tr>   <td>           
+          <apex:commandbutton status="actStatusId" value="Previous" action="{!previousButton}" rerender="tableid" disabled="{!IF(showPrevious==true,'false', 'true')}" style="padding: 7px 20px;" rendered="{!wrapperObj!=null && wrapperObj.questionList.size > 0}"/> </td><td>
+             <apex:commandbutton status="actStatusId" value="Next" action="{!nextButton}" rerender="tableid" disabled="{!IF(showSave==false,'false', 'true')}" style="padding: 7px 20px;" rendered="{!wrapperObj!=null && wrapperObj.questionList.size > 0}"/></td><td>
+          <apex:commandbutton status="actStatusId" value="Save & Close" action="{!SaveButton}" onComplete="closeWindow();" rerender="tableid"  style="padding: 7px 20px;" disabled="{!if(showSave==false,'false','true')}" rendered="{!wrapperObj!=null && wrapperObj.questionList.size > 0}"/>   </td><td>     
+          <apex:commandbutton status="actStatusId" value="Submit" action="{!SubmitButton}" rerender="tableid"  style="padding: 7px 20px;" disabled="{!if(showSave==true,'false','true')}" rendered="{!wrapperObj!=null && wrapperObj.questionList.size > 0}"/> </td>
+          </tr> </table>
+          <!--</apex:actionRegion>-->
+          <apex:actionStatus id="actStatusId" >
+                <apex:facet name="start" >
+                  <img src="/img/loading.gif" />                    
+                </apex:facet>
+            </apex:actionStatus>    
+      </apex:pageBlock>            
+  </apex:form>    
+ 
+</apex:page>
